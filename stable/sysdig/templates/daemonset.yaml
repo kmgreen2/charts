@@ -41,6 +41,11 @@ spec:
             exec:
               command: [ "test", "-e", "/opt/draios/logs/draios.log" ]
             initialDelaySeconds: 10
+          {{- if .Values.gkeCosSupport.enabled }}
+          env:
+            - name: SYSDIG_BPF_PROBE
+              value: ""
+          {{- end }}
           volumeMounts:
             - mountPath: /host/var/run/docker.sock
               name: docker-sock
@@ -62,6 +67,11 @@ spec:
               readOnly: true
             - mountPath: /dev/shm
               name: dshm
+            {{- if .Values.gkeCosSupport.enabled }}
+            - mountPath: /host/etc
+              name: host-etc
+              readOnly: true
+            {{- end }}
             - mountPath: /opt/draios/etc/kubernetes/config
               name: sysdig-agent-config
             - mountPath: /opt/draios/etc/kubernetes/secrets
@@ -71,6 +81,11 @@ spec:
               name: custom-app-checks-volume
             {{- end }}
       volumes:
+        {{- if .Values.gkeCosSupport.enabled }}
+        - name: host-etc
+          hostPath:
+            path: /etc
+        {{- end }}
         - name: dshm
           emptyDir:
             medium: Memory

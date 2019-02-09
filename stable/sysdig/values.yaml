@@ -81,3 +81,7 @@ customAppChecks: {}
 tolerations:
   - effect: NoSchedule
     key: node-role.kubernetes.io/master
+
+# Enable support for running sysdig in GKE on Google's COS images
+gkeCosSupport:
+  enabled: false
